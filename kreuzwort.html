@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wortprüfung</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f4f7f2;
+      --card: rgba(255, 255, 255, 0.75);
+      --text: #1f2a1f;
+      --muted: #6b7a6b;
+      --accent: #4f7c5a;
+      --error: #b24a3f;
+      --success: #3f7c5a;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(180deg, #e9efe6, #f7f9f5);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+    }
+
+    .card {
+      width: 340px;
+      padding: 28px;
+      border-radius: 18px;
+      background: var(--card);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      border: 1px solid rgba(255,255,255,0.6);
+      text-align: center;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 18px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(0,0,0,0.08);
+      outline: none;
+      font-size: 14px;
+      background: white;
+      transition: 0.2s;
+      box-sizing: border-box;
+    }
+
+    input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79,124,90,0.15);
+    }
+
+    button {
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      background: var(--accent);
+      color: white;
+      font-weight: 500;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-1px);
+      background: #3f6a4c;
+    }
+
+    .message {
+      margin-top: 14px;
+      font-size: 14px;
+      font-weight: 500;
+      min-height: 20px;
+    }
+
+    .error { color: var(--error); }
+    .success { color: var(--success); }
+
+    .hint {
+      margin-top: 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <div class="title">Kreuzworträtsel</div>
+    <div class="subtitle">Kennst du den Ort, an dem alles beginnt?</div>
+
+    <input id="inputWord" type="text" placeholder="Lösungswort..." />
+
+    <button onclick="checkWord()">Prüfen</button>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <script>
+    const solution = "inzell";
+
+    function checkWord() {
+      const input = document.getElementById("inputWord").value.trim().toLowerCase();
+      const message = document.getElementById("message");
+
+      if (input === solution) {
+        message.textContent = "Richtig – der Weg ist frei.";
+        message.className = "message success";
+      } else {
+        message.textContent = "Falsch – versuch es nochmal.";
+        message.className = "message error";
+      }
+    }
+  </script>
+
+</body>
+</html>
