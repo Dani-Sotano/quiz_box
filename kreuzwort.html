@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gate</title>
+  <title>Pfad</title>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
   <style>
@@ -26,8 +25,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--text);
       background: linear-gradient(180deg, var(--bg1), var(--bg2));
+      color: var(--text);
       transition: background 0.6s ease, filter 0.6s ease;
       cursor: pointer;
     }
@@ -40,11 +39,18 @@
       backdrop-filter: blur(10px);
       box-shadow: 0 10px 30px rgba(0,0,0,0.08);
       text-align: center;
-      transition: all 0.4s ease;
     }
 
-    h1 { font-size: 18px; margin-bottom: 6px; }
-    p { font-size: 13px; color: var(--muted); }
+    h1 {
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 0;
+    }
 
     input {
       width: 100%;
@@ -54,7 +60,6 @@
       border: 1px solid rgba(0,0,0,0.1);
       outline: none;
       font-size: 14px;
-      box-sizing: border-box;
     }
 
     button {
@@ -74,21 +79,21 @@
       min-height: 18px;
     }
 
-    .error { color: var(--error); }
-
-    #qrcode {
-      margin-top: 16px;
-      display: flex;
-      justify-content: center;
-
-      opacity: 0;
-      transform: scale(0.8);
-      transition: all 0.8s ease;
+    .error {
+      color: var(--error);
     }
 
-    #qrcode.show {
-      opacity: 1;
-      transform: scale(1);
+    #link {
+      display: none;
+      margin-top: 14px;
+      font-size: 14px;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    #link:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -97,30 +102,32 @@
 
 <div class="card">
   <h1>Pfadprüfung</h1>
-  <p>Klick die Umgebung, um dich zu orientieren</p>
+  <p>Je mehr du dich irrst, desto dunkler wird der Weg</p>
 
   <input id="input" placeholder="Lösungswort..." />
   <button onclick="check()">Prüfen</button>
 
   <div id="msg" class="message"></div>
 
-  <div id="qrcode"></div>
+  <a id="link" target="_blank">→ Weitergehen</a>
 </div>
 
 <script>
+  // 🔐 solution
   const solution = "inzell";
-  const targetURL = "https://dani-sotano.github.io/quiz_box/landkarte.html";
 
-  let darkness = 0; // 0 = clear, 5 = very dark
-  let qrCreated = false;
+  // 🎯 destination
+  const targetURL = "https://dani-sotano.github.io/quiz_box/kreuzwort.html";
+
+  let darkness = 0;
 
   function applyDarkness() {
-    const intensity = darkness * 12;
+    const intensity = darkness * 0.12;
 
     document.body.style.background =
       `linear-gradient(180deg,
-      rgb(${233 - intensity}, ${239 - intensity}, ${230 - intensity}),
-      rgb(${247 - intensity}, ${249 - intensity}, ${245 - intensity}))`;
+      rgb(${233 - intensity*100}, ${239 - intensity*100}, ${230 - intensity*100}),
+      rgb(${247 - intensity*100}, ${249 - intensity*100}, ${245 - intensity*100}))`;
 
     document.body.style.filter = `brightness(${1 - darkness * 0.08})`;
   }
@@ -128,22 +135,15 @@
   function check() {
     const val = document.getElementById("input").value.trim().toLowerCase();
     const msg = document.getElementById("msg");
-    const qr = document.getElementById("qrcode");
+    const link = document.getElementById("link");
 
     if (val === solution) {
       msg.textContent = "Du hast den Weg gefunden.";
       msg.className = "message";
 
-      if (!qrCreated) {
-        new QRCode(qr, {
-          text: targetURL,
-          width: 180,
-          height: 180
-        });
-        qrCreated = true;
-      }
+      link.href = targetURL;
+      link.style.display = "inline-block";
 
-      setTimeout(() => qr.classList.add("show"), 80);
       darkness = 0;
       applyDarkness();
 
@@ -151,15 +151,15 @@
       msg.textContent = "Du verlierst die Orientierung.";
       msg.className = "message error";
 
-      // progressive darkness instead of instant change
-      if (darkness < 5) darkness++;
+      if (darkness < 6) darkness++;
       applyDarkness();
+
+      link.style.display = "none";
     }
   }
 
-  // Click = regain clarity (important mechanic)
+  // 👆 click = regain clarity
   document.body.addEventListener("click", (e) => {
-    // don't trigger when clicking input/button
     if (e.target.tagName === "INPUT" || e.target.tagName === "BUTTON") return;
 
     if (darkness > 0) {
